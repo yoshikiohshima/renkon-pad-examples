@@ -1,0 +1,176 @@
+{"padTitle":"artwork",
+"positions":{"map":{"__map":true,
+"values":[["3",{"height":104.80019581686456,
+"id":"3",
+"type":"move",
+"width":663.3265165141789,
+"x":-80.49706811944964,
+"y":440.9732192026694}],["8",{"height":277.9639719003385,
+"id":"8",
+"type":"move",
+"width":714.1674197855559,
+"x":-86.01539322623636,
+"y":629.9957983653046}],["11",{"height":400.78244382241,
+"id":"11",
+"type":"resize",
+"width":580.9654001170702,
+"x":-75.72547436832255,
+"y":-183.36043404903236}],["40",{"height":148.04286355242908,
+"id":"40",
+"type":"move",
+"width":583.4754324440705,
+"x":-75.23908850924458,
+"y":247.36019758493924}],["48",{"height":1527.4506448373654,
+"id":"48",
+"type":"move",
+"width":492.31335300984347,
+"x":670.8298964626821,
+"y":-181.32071640566858}]]}},
+"titles":{"map":{"__map":true,
+"values":[["3",{"id":"3",
+"state":false,
+"title":"fetch"}],["8",{"id":"8",
+"state":false,
+"title":"DOM"}],["11",{"id":"11",
+"state":false,
+"title":"initialization"}],["40",{"id":"40",
+"state":false,
+"title":"query"}],["48",{"id":"48",
+"state":false,
+"title":"CSS"}]]}},
+"version":2,
+"windowEnabled":{"map":{"__map":true,
+"values":[["3",{"enabled":true,
+"id":"3"}],["8",{"enabled":true,
+"id":"8"}],["11",{"enabled":true,
+"id":"11"}],["40",{"enabled":true,
+"id":"40"}],["48",{"enabled":true,
+"id":"48"}]]}},
+"windowTypes":{"map":{"__map":true,
+"values":[["3","code"],["8","code"],["11","code"],["40","code"],["48","code"]]}},
+"windows":["3","8","11","40","48"],
+"zIndex":{"map":{"__map":true,
+"values":[["3",108],["8",110],["11",106],["40",107],["48",103]]}}}
+{__codeMap: true, value: [[`3`, `const list = fetch(
+  \`https://api.artic.edu/api/v1/artworks/search?q=\${query}&fields=title,id,image_id&limit=50\`
+).then((r) => r.json()).then((json) => json.data);`],
+[`8`, `const clicked = Events.receiver();
+const clickHandler = (evt) => {if (evt.currentTarget) {Events.send(clicked, evt.currentTarget)}};
+
+const listDOM = list.map((elem) => html\`<tr onClick=\${clickHandler} imageId="\${elem.image_id}">
+    <td>\${elem.id}</td><td>\${elem.title}</td></tr>\`);
+const tableDOM = html\`<table><tbody>\${listDOM}</tbody></table>\`;
+
+const src = \`https://www.artic.edu/iiif/2/\${clicked.getAttribute("imageId")}/full/843,/0/default.jpg\`;
+const img = Behaviors.keep(h("img", {style: {width: "200px", height: "200px"}, src}));
+
+render(tableDOM, renkon.querySelector("#tableContainer"));
+render(img, renkon.querySelector("#imageContainer"));
+`],
+[`11`, `const {h, html, render} = import("./preact.standalone.module.js");
+
+const renkon = (() => {
+  const renkon = document.createElement("div");
+  renkon.id = "renkon";
+    
+  renkon.innerHTML = \`
+  <input id="query" value="picasso">
+  <hr>
+  <div id="panes" style="display: flex;">
+    <div id="tableContainer"></div>
+  </div>
+  <div id="imageContainer"></div>
+\`.trim();
+
+    document.body.querySelector("#renkon")?.remove();
+    document.body.appendChild(renkon);
+    return renkon;
+})();
+`],
+[`40`, `const query = Events.listener(renkon.querySelector("#query"), "keydown", (evt) => {
+  if (evt.key === "Enter") {
+    return evt.target.value;
+  }
+});
+`],
+[`48`, `const css = \`
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  #query {
+    width: 200px;
+    padding: 6px;
+    margin: 10px;
+    font-size: 14px;
+    border: 1px solid black;
+  }
+
+  #panes {
+    display: flex;
+    padding: 10px;
+    gap: 20px;
+  }
+
+  #tableContainer {
+    max-width: calc(100% - 250px);
+  }
+  #tableContainer table {
+    border-collapse: collapse;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: block;
+  }
+
+  #tableContainer tr {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  #tableContainer tr:nth-child(odd) {
+    background-color: #f9f9f9;
+  }
+
+  #tableContainer tr:nth-child(even) {
+    background-color: #ffffff;
+  }
+
+  #tableContainer tr:hover {
+    background-color: #dbeafe; /* light blue on hover */
+  }
+
+  #tableContainer td {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+  }
+
+  #imageContainer {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fafafa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #imageContainer img {
+    max-width: 200px;
+    max-height: 200px;
+    display: block;
+    border-radius: 4px;
+  }
+\`;
+
+((css) => {
+  document.head.querySelector("#artwork-css")?.remove();
+  const style = document.createElement("style");
+  style.id = "artwork-css";
+  style.textContent = css;
+  document.head.appendChild(style);
+})(css);`]]}
