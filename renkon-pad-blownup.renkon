@@ -2090,7 +2090,7 @@ html, body {
     news.forEach((id) => prev.map.set(\`\${id}\`, newWindow(id, types.map.get(id))));
     return {map: prev.map};
   },
-  Events.delay(moveOrResize, 3000), (prev, command) => {
+  moveOrResize, (prev, command) => {
     const v = {...prev.map.get(command.id), ...command};
     prev.map.set(command.id, v);
     return {map: prev.map};
