@@ -400,10 +400,10 @@
 "type":"move",
 "width":537.142020843003,
 "x":1078.7700828825855,
-"y":-560.7072083639522}],["80",{"height":379.1134919141198,
+"y":-560.7072083639522}],["80",{"height":392.14987704772903,
 "id":"80",
-"type":"move",
-"width":332.91902063557643,
+"type":"resize",
+"width":309.1534052289146,
 "x":-83.64327766018518,
 "y":-473.20174527991696}],["81",{"height":171.36345378145296,
 "id":"81",
@@ -1165,7 +1165,7 @@
     const centerY = (maxBottom + minTop) / 2;
     let x = (pad.width / 2 / scale - centerX);
     let y = (pad.height / 2 / scale - centerY);
-    Events.send(padViewChange, {x, y, scale});
+    Events.send(padViewChange, {x, y, scale, force: true});
   }
 })(navigationAction, positions, padView);`],
 [`31`, `const showGraph = Behaviors.collect(
@@ -2127,7 +2127,7 @@ html, body {
     return {map: prev.map};
   },
   home, (_prev, _home) => {
-    return {map: new Map}
+    return {map: new Map()}
   }
 )`],
 [`71`, `const findMax = (map)  => {
@@ -2314,21 +2314,23 @@ html, body {
 [`80`, `const padView = Behaviors.select(
   {x: 0, y: 0, scale: 1},
   padViewChange, (prev, view) => {
-    let {x, y, scale} = view;
-
-    if (scale < 0.1) {
-      x = prev.x;
-      y = prev.y;
-      scale = 0.1;
-    }
-    if (scale > 20) {
-      x = prev.x;
-      y = prev.y;
-      scale = 20;
+    let {x, y, scale, force} = view;
+    if (!force) {
+      if (scale < 0.1) {
+        x = prev.x;
+        y = prev.y;
+        scale = 0.1;
+      }
+      if (scale > 20) {
+        x = prev.x;
+        y = prev.y;
+        scale = 20;
+      }
     }
     return {...prev, ...{x, y, scale}};
   }
-);`],
+);
+`],
 [`81`, `const padTitle = Behaviors.select(
   "untitled",
   loadRequest, (_prev, data) => {
