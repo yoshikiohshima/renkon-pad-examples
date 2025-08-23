@@ -1,0 +1,1 @@
+This directory contains some experimental demos for giving talks and doing party tricks. They are typically meant to be added to a new text box in the renkon-pad implementation.
