@@ -1,0 +1,233 @@
+{"padTitle":"automerge-yo1",
+"positions":{"map":{"__map":true,
+"values":[["0",{"height":1098.693868480398,
+"id":"0",
+"type":"resize",
+"width":801.2385631098839,
+"x":-311.30218663472345,
+"y":-614.1255975947779}],["5",{"height":265.29304109165224,
+"id":"5",
+"type":"move",
+"width":572.9168906276942,
+"x":754.0270452735006,
+"y":-607.988643954326}]]}},
+"titles":{"map":{"__map":true,
+"values":[["0",{"id":"0",
+"state":false,
+"title":"untitled"}],["5",{"id":"5",
+"state":false,
+"title":"untitled"}]]}},
+"version":3,
+"windowEnabled":{"map":{"__map":true,
+"values":[["0",{"enabled":true,
+"id":"0"}],["5",{"enabled":true,
+"id":"5"}]]}},
+"windowTypes":{"map":{"__map":true,
+"values":[["0","code"],["5","code"]]}},
+"windows":["0","5"],
+"zIndex":{"map":{"__map":true,
+"values":[["0",100],["5",102]]}}}
+{__codeMap: true, value: [[`0`, `const AutomergeRepo = import("https://esm.sh/@automerge/automerge-repo/slim?bundle-deps");
+const IndexedDBStorageAdapter = import("https://esm.sh/@automerge/automerge-repo-storage-indexeddb?bundle-deps");
+const WebSocketClientAdapter = import("https://esm.sh/@automerge/automerge-repo-network-websocket?bundle-deps");
+
+const wasm = fetch('https://esm.sh/@automerge/automerge/dist/automerge.wasm').then(resp => resp.arrayBuffer());
+
+const repoInitialized = AutomergeRepo.initializeWasm(wasm).then(() => true);
+
+console.log(repoInitialized);
+
+const repo = ((AutomergeRepo, IndexedDBStorageAdapter, WebSocketClientAdapter) => {
+  return new AutomergeRepo.Repo({
+    storage: new IndexedDBStorageAdapter.IndexedDBStorageAdapter(),
+    network: [
+      new WebSocketClientAdapter.WebSocketClientAdapter("wss://sync.automerge.org"),
+    ]
+  });
+})(AutomergeRepo, IndexedDBStorageAdapter, WebSocketClientAdapter, repoInitialized);
+
+console.log(repo);
+
+const handle = ((repo) => {
+  const docUrl = window.parent.location.hash.slice(1);
+  if (docUrl) {
+    return repo.find(docUrl)
+  } else {
+    const newHandle = repo.create({ text: "Automerge x Renkon Pad" })
+    window.parent.location.hash = newHandle.url;
+    return newHandle;
+  }
+})(repo);
+
+const container = (() => {
+  const container = document.createElement("div");
+  container.id = "container";
+  document.body.querySelector("#container")?.remove();
+  document.body.appendChild(container);
+  return container;
+})(handle);
+
+const config = {
+  doc: handle.doc().text,
+  extensions: [
+    automergeSyncPlugin({
+      handle,
+      path: ["text"],
+      codemirror: window.CodeMirror,
+      automerge: AutomergeRepo.Automerge,
+    })
+  ],
+  parent: container,
+};
+
+const view = new window.CodeMirror.EditorView(config);
+`],
+[`5`, `const automergeSyncPlugin = ({ handle, path, codemirror, automerge}) => {
+  const reconcileAnnotationType = codemirror.state.Annotation.define();
+  const isReconcileTx = (tr) => !!tr.annotation(reconcileAnnotationType);
+
+  const applyAmPatchesToCm = (view, target, patches) => {
+      let selection = view.state.selection;
+      for (const patch of patches) {
+          const changeSpec = handlePatch(patch, target, view.state);
+          if (changeSpec != null) {
+              const changeSet = codemirror.state.ChangeSet.of(changeSpec, view.state.doc.length, "\\n");
+              selection = selection.map(changeSet, 1);
+              view.dispatch({
+                  changes: changeSet,
+                  annotations: reconcileAnnotationType.of({}),
+              });
+          }
+      }
+      view.dispatch({
+          selection,
+          annotations: reconcileAnnotationType.of({}),
+      });
+  };
+  function handlePatch(patch, target, state) {
+      if (patch.action === "insert") {
+          return handleInsert(target, patch);
+      }
+      else if (patch.action === "splice") {
+          return handleSplice(target, patch);
+      }
+      else if (patch.action === "del") {
+          return handleDel(target, patch);
+      }
+      else if (patch.action === "put") {
+          return handlePut(target, patch, state);
+      }
+      else {
+          return null;
+      }
+  }
+  function handleInsert(target, patch) {
+      const index = charPath(target, patch.path);
+      if (index == null) {
+          return [];
+      }
+      const text = patch.values.map(v => (v ? v.toString() : "")).join("");
+      return [{ from: index, to: index, insert: text }];
+  }
+  function handleSplice(target, patch) {
+      const index = charPath(target, patch.path);
+      if (index == null) {
+          return [];
+      }
+      return [{ from: index, insert: patch.value }];
+  }
+  function handleDel(target, patch) {
+      const index = charPath(target, patch.path);
+      if (index == null) {
+          return [];
+      }
+      const length = patch.length || 1;
+      return [{ from: index, to: index + length }];
+  }
+  function handlePut(target, patch, state) {
+      const index = charPath(target, [...patch.path, 0]);
+      if (index == null) {
+          return [];
+      }
+      const length = state.doc.length;
+      if (typeof patch.value !== "string") {
+          return []; // TODO(dmaretskyi): How to handle non string values?
+      }
+      return [{ from: 0, to: length, insert: patch.value }];
+  }
+  
+  // If the path of the patch is of the form [path, <index>] then we know this is
+  // a path to a character within the sequence given by path
+  function charPath(textPath, candidatePath) {
+      if (candidatePath.length !== textPath.length + 1)
+          return null;
+      for (let i = 0; i < textPath.length; i++) {
+          if (textPath[i] !== candidatePath[i])
+              return null;
+      }
+      const index = candidatePath[candidatePath.length - 1];
+      if (typeof index === "number")
+          return index;
+      return null;
+  }
+
+  const applyCmTransactionsToAmHandle = (handle, path, transactions) => {
+      const transactionsWithChanges = transactions.filter(tr => !isReconcileTx(tr) && !tr.changes.empty);
+      if (transactionsWithChanges.length === 0) {
+          return;
+      }
+      handle.change((doc) => {
+          transactionsWithChanges.forEach(tr => {
+              tr.changes.iterChanges((fromA, toA, fromB, _toB, inserted) => {
+                  // We are cloning the path as \`am.splice\` calls \`.unshift\` on it, modifying it in place,
+                  // causing the path to be broken on subsequent changes
+                  automerge.splice(doc, path.slice(), fromB, toA - fromA, inserted.toString());
+              });
+          });
+      });
+      return automerge.getHeads(handle.doc());
+  };
+  
+  if (!handle.isReady()) {
+      throw new Error("ensure the handle is ready before initializing the automergeSyncPlugin");
+  }
+  return codemirror.view.ViewPlugin.fromClass(class {
+      view;
+      reconciledHeads = automerge.getHeads(handle.doc());
+      isProcessingCmTransaction = false;
+      constructor(view) {
+          this.view = view;
+          this.onChange = this.onChange.bind(this);
+          handle.on("change", this.onChange);
+      }
+      update(update) {
+          // start processing codemirror transaction
+          // changes that are created through the transaction are ignored in the change listener on the handle
+          this.isProcessingCmTransaction = true;
+          const newHeads = applyCmTransactionsToAmHandle(handle, path, update.transactions);
+          if (newHeads) {
+              this.reconciledHeads = newHeads;
+          }
+          // finish processing transaction
+          this.isProcessingCmTransaction = false;
+      }
+      onChange = () => {
+          // ignore changes that where triggered while processing a codemirror transaction
+          if (this.isProcessingCmTransaction) {
+              return;
+          }
+          const currentHeads = automerge.getHeads(handle.doc());
+          if (automerge.equals(currentHeads, this.reconciledHeads)) {
+              return;
+          }
+          // get the diff between the reconciled heads and the new heads
+          // and apply that to the codemirror doc
+          const patches = automerge.diff(handle.doc(), this.reconciledHeads, currentHeads);
+          applyAmPatchesToCm(this.view, path, patches);
+          this.reconciledHeads = currentHeads;
+      };
+      destroy() {
+          handle.off("change", this.onChange);
+      }
+  });
+}`]]}
