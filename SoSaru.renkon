@@ -1,0 +1,363 @@
+{"padTitle":"SoSaru",
+"positions":{"map":{"__map":true,
+"values":[["0",{"height":974.951868423896,
+"id":"0",
+"type":"move",
+"width":531.6228545715301,
+"x":-1817.3721572616967,
+"y":-227.49025659425615}],["1",{"height":640.640625,
+"id":"1",
+"type":"move",
+"width":708.25390625,
+"x":-1970.0572804665514,
+"y":799.0562513534123}],["3",{"height":1281.672462024944,
+"id":"3",
+"type":"resize",
+"width":692.9349960316574,
+"x":-1223.2214758420726,
+"y":-230.09032037802692}],["4",{"height":845.9975712262717,
+"id":"4",
+"type":"resize",
+"width":566.6898008482983,
+"x":584.1062130688564,
+"y":-82.72619945991417}],["13",{"height":656.3382849202893,
+"id":"13",
+"type":"resize",
+"width":583.3538602769537,
+"x":1203.7913503233738,
+"y":-81.2543550128819}],["21",{"height":1054.0316712840574,
+"id":"21",
+"type":"move",
+"width":589.059649890459,
+"x":-82.41645624331511,
+"y":182.070131245192}],["56",{"height":157.37150734147565,
+"id":"56",
+"type":"move",
+"width":540.7472687820978,
+"x":-68.27290835078725,
+"y":-82.48749091889874}]]}},
+"titles":{"map":{"__map":true,
+"values":[["0",{"id":"0",
+"state":false,
+"title":"variables"}],["1",{"id":"1",
+"state":false,
+"title":"tq layer"}],["3",{"id":"3",
+"state":false,
+"title":"input switch css"}],["4",{"id":"4",
+"state":false,
+"title":"untitled"}],["13",{"id":"13",
+"state":false,
+"title":"untitled"}],["21",{"id":"21",
+"state":false,
+"title":"untitled"}],["56",{"id":"56",
+"state":false,
+"title":"untitled"}]]}},
+"version":3,
+"windowEnabled":{"map":{"__map":true,
+"values":[["0",{"enabled":true,
+"id":"0"}],["1",{"enabled":true,
+"id":"1"}],["3",{"enabled":true,
+"id":"3"}],["4",{"enabled":true,
+"id":"4"}],["13",{"enabled":true,
+"id":"13"}],["21",{"enabled":true,
+"id":"21"}],["56",{"enabled":true,
+"id":"56"}]]}},
+"windowTypes":{"map":{"__map":true,
+"values":[["0","code"],["1","code"],["3","code"],["4","code"],["13","code"],["21","code"],["56","code"]]}},
+"windows":["0","1","3","4","13","21","56"],
+"zIndex":{"map":{"__map":true,
+"values":[["0",100],["1",105],["3",101],["4",107],["13",106],["21",108],["56",102]]}}}
+{__codeMap: true, value: [[`0`, `const styleVars = (() => {
+  const str = \`
+body {
+  --tq-color-accent: #00f;
+  --tq-color-on-accent: #fff;
+  --tq-color-accent-hover: #0744ff;
+  --tq-color-accent-soft: #c9dfff;
+  --tq-color-accent-soft-hover: #b5d2ff;
+  --tq-color-background: #fff;
+  --tq-color-text: #1e1f24;
+  --tq-color-text-mute: #62636c;
+  --tq-color-text-subtle: #80828d;
+  --tq-color-surface: color-mix(in srgb, transparent, #fcfcfd 80%);
+  --tq-color-border: #000b3618; --tq-color-border-subtle: #00104010;
+  --tq-color-shadow: color-mix(in srgb, transparent, #1e1f24 20%);
+  --tq-color-input: #eff0f3;
+  --tq-color-input-hover: #e7e8ec;
+  --tq-color-selection: #0744ff;
+  --tq-color-on-selection: #fff;
+  --tq-color-secondary: #5c5d72;
+  --tq-color-error: #be0040;
+  --tq-color-error-soft: #ffdadc;
+  --tq-color-rec: #be0040;
+  --tq-color-affirmative: #3843f2;
+  --tq-font-code: 'Geist Mono', monospace;
+  --tq-font-heading: Geist, sans-serif;
+  --tq-font-ui: system-ui, sans-serif;
+  --tq-font-numeric: Geist, system-ui, sans-serif;
+  --tq-rem: 12px;
+  --tq-radius-input: 4px;
+  --tq-radius-popup: 6px;
+  --tq-radius-pane: 12px;
+  --tq-popup-width: 240px;
+  --tq-popup-padding: 9px;
+  --tq-icon-size: 18px;
+  --tq-input-height: 24px;
+  --tq-input-gap: 9px;
+  --tq-pane-padding: 12px;
+  --tq-scrollbar-width: 6px;
+  --tq-hover-transition-duration: 0.15s;
+  --tq-active-transition-duration: 64ms;\`.trim();
+
+  const s = document.createElement("style");
+  s.id = "tqVars";
+  s.textContent = str;
+  document.head.querySelector("#tqVars")?.remove();
+  document.head.appendChild(s);
+  return s;
+})();
+`],
+[`1`, `const tqLayer = (() => {
+  
+  const str = \`
+@layer tweeq {
+.TqViewport *, .TqViewport *:before, .TqViewport *:after {
+  content: unset;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+    color: inherit;
+    font: inherit;
+    font-size: inherit;
+    box-sizing: border-box;
+    font-weight: inherit;
+    font-style: normal;
+    text-align: inherit;
+    list-style: none;
+    outline: none;
+    cursor: inherit;
+    background: transparent;
+}
+}
+\`.trim();
+
+  const s = document.createElement("style");
+  s.id = "tqLayer";
+  s.textContent = str;
+  document.head.querySelector("#tqLayer")?.remove();
+  document.head.appendChild(s);
+  return s;
+})();
+`],
+[`3`, `const {h, html, render} = import("./preact.standalone.module.js");
+
+const inputSwitchStyle = (() => {
+  const str = \`
+.input {
+  display: grid;
+  gap: 6px;
+  align-items: center;
+  min-width: 15rem;
+}
+.track {
+  position: relative;
+  width: calc(var(--tq-input-height) * 2);
+  border-radius: 9999px;
+  background-color: var(--tq-color-input);
+  transition: background-color var(--tq-active-transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+  height: var(--tq-input-height);
+}
+.track:has(:checked) {
+  background-color: var(--tq-color-accent);
+}
+.TqInputSwitch {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+.track:has(.input:focus):before, .track.subfocus:before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 1px solid var(--tq-color-accent);
+  border-radius: 999px;
+}
+
+.input2 {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:checked + .handle {
+  left: calc(100% - var(--tq-input-height) + 4px);
+  background-color: var(--tq-color-background);
+}
+
+.handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(var(--tq-input-height) - 8px);
+  height: calc(var(--tq-input-height) - 8px);
+  border-radius: 9999px;
+  background-color: var(--tq-color-text-subtle);
+  transition: left var(--tq-active-transition-duration) 
+    cubic-bezier(0.4, 0, 0.2, 1), width var(--tq-active-transition-duration) 
+    cubic-bezier(0.4, 0, 0.2, 1), background-color var(--tq-active-transition-duration) 
+    cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+  \`
+
+  const s = document.createElement("style");
+  s.id = "inputSwitchStyle";
+  s.textContent = str;
+  document.head.querySelector("#inputSwitchStyle")?.remove();
+  document.head.appendChild(s);
+  return s;
+})();
+`],
+[`4`, `const setter = Events.receiver();
+
+function random() {
+  return Math.random() <= 0.5;
+}
+
+const values = Behaviors.select(
+  [...Array(9).keys()].map(random),
+  reset, (_prev, _reset) => [...Array(9).keys()].map(random),
+  setter, (prev, setter) => {
+          console.log("setter", setter);
+    const result = [...prev];
+    const index = setter.index;
+    console.log("setter", setter);
+    const map = [
+      [0, 1, 3],
+      [1, 0, 2, 4],
+      [2, 1, 5],
+      [3, 0, 4, 6],
+      [4, 1, 3, 5, 7],
+      [5, 2, 4, 8],
+      [6, 3, 7],
+      [7, 4, 6, 8],
+      [8, 5, 7]
+    ];
+
+    for (const ind of map[index]) {
+      console.log("flip", ind);
+      result[ind] = !result[ind];
+    }
+    return result;
+  }
+);
+
+const allTrue = !values.some(e => e === false);
+container.querySelector("#win").style.display = allTrue ? "inherit" : "none";
+
+console.log(allTrue);
+
+const grid = h("div", {"class": "switch-grid"}, switches);
+
+render(grid, container.querySelector("#gridContainer"));
+document.body.style.height = "100%";
+document.body.parentNode.style.height = "100%";
+`],
+[`13`, `const switches = values.map((value, id) => {
+  return h("div", {
+    "class": "input switch-item",
+    id: \`\${id}-switch\`,
+  }, h("div", {
+    "class": "TqInputSwitch",
+    type: "boolean",
+    ui: "switch",
+    icon: "mdi-toggle-switch",
+  }, h("div", {
+    "class": "track subfocus",
+    id: \`\${id}-track\`,
+    onClick
+  }, [
+    h("input", {
+      "class": "input2 ",
+      type: "checkbox",
+      checked: value
+    }),
+    h("div", {
+      "class": "handle",
+    })
+  ])));
+});
+
+const onClick = (evt) => {
+  Events.send(setter, {index: Number.parseInt(evt.target.id)});
+}
+
+const reset = Events.listener(
+  container.querySelector("#reset"),
+  "click",
+  (evt) => evt);
+
+`],
+[`21`, `const container = ((message) => {
+  const str = \`
+.switch-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+  grid-template-rows: 30% 30% 30%; 
+  column-gap: 5%;
+  row-gap: 20%;
+  max-width: 210px;
+  max-height: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#container {
+ text-align: center;
+}
+.title {
+font-size: 150%;
+color: #aac;
+}
+
+#reset {
+  position: fixed;
+  right: 30px;
+  top: 20px;
+}
+
+#win {
+  position: fixed;
+  margin-right: auto;
+  margin-left: auto;
+  top: 40%;
+  margin-bottom: auto;
+  font-size: 250%;
+  color: #e99;
+  z-index: 20;
+  background-color: #44f;
+  border-radius: 30%;
+}
+
+\`.trim();
+  const s = document.createElement("style");
+  s.id = "gridStyle";
+  s.textContent = str;
+  document.head.querySelector("#gridStyle")?.remove();
+  document.head.appendChild(s);
+
+  const div = document.createElement("div");
+  div.id = "container";
+  div.innerHTML = message + \`<br><div id="gridContainer"></div>\`;
+  document.body.querySelector("#container")?.remove();
+  document.body.appendChild(div);  
+  return div;
+})(message);
+`],
+[`56`, `const message = \`
+<span id="win">You won!</span>
+<span class="title">The "SoSaru game"</span><br>
+Flip switches so that you get all 9 switches to be on.<br>
+Switches adjecent to the one you click on also flip. 
+<button id="reset">Reset</button>\`.trim();`]]}
