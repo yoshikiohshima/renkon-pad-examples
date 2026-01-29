@@ -1,5 +1,5 @@
 const decls = Renkon.findDecls(Renkon.scripts.join("\n")).map((d) => d.code);
-const delayed = Events.once(Events.delay(decls, 250));
+const delayedTrigger = Events.once(Events.delay(decls, 250));
 
 ((decls) => {
   const code = new Map(decls.map((decl, id) => [`${id}`, decl]));
@@ -24,7 +24,7 @@ const delayed = Events.once(Events.delay(decls, 250));
     padTitle
   }
 
-  Events.send(loadRequest, loaded);
-})(delayed);
+  Events.send(loadFromProgram, loaded);
+})(delayedTrigger);
 
 
