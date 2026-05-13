@@ -4,29 +4,35 @@
 "id":"3",
 "width":663.3265165141789,
 "x":-78.86788611046592,
-"y":528.919758227124}],["8",{"height":345.10483067370933,
+"y":517.990455120635}],["8",{"height":318.56943855319594,
 "id":"8",
-"width":727.5308863043945,
-"x":-85.7099215995519,
-"y":667.5333914472961}],["11",{"height":400.78244382241,
+"width":808.1897513609844,
+"x":-80.82470293495123,
+"y":658.7469910065676}],["11",{"height":400.78244382241,
 "id":"11",
-"type":"resize",
 "width":580.9654001170702,
-"x":-75.72547436832255,
-"y":-183.36043404903236}],["40",{"height":233.88962444459747,
+"x":-75.01117347973575,
+"y":-179.32438427296145}],["40",{"height":233.88962444459747,
 "id":"40",
 "width":620.8204972447569,
 "x":-75.23908850924458,
 "y":255.91340313210375}],["48",{"height":1527.4506448373654,
 "id":"48",
-"type":"move",
 "width":492.31335300984347,
-"x":670.8298964626821,
-"y":-181.32071640566858}],["50",{"height":338.9152685509017,
+"x":753.4372805898636,
+"y":-181.58270216305905}],["50",{"height":338.9152685509017,
 "id":"50",
 "width":630.9428554160462,
 "x":-86.61527756611142,
-"y":-592.8789155660895}]]}},
+"y":-592.8789155660895}],["58",{"height":554.3439381569488,
+"id":"58",
+"width":798.5763933339354,
+"x":-912.1343949887716,
+"y":-208.7892093237385}],["59",{"height":589.2947305866123,
+"id":"59",
+"width":803.381690220792,
+"x":-915.6509532095067,
+"y":384.69992198082525}]]}},
 "titles":{"map":{"__map":true,
 "values":[["3",{"id":"3",
 "state":false,
@@ -40,7 +46,11 @@
 "state":false,
 "title":"CSS"}],["50",{"id":"50",
 "state":false,
-"title":"Croquet"}]]}},
+"title":"Croquet"}],["58",{"id":"58",
+"state":false,
+"title":"untitled-58"}],["59",{"id":"59",
+"state":false,
+"title":"untitled-59"}]]}},
 "version":3,
 "windowEnabled":{"map":{"__map":true,
 "values":[["3",{"enabled":true,
@@ -49,13 +59,15 @@
 "id":"11"}],["40",{"enabled":true,
 "id":"40"}],["48",{"enabled":true,
 "id":"48"}],["50",{"enabled":true,
-"id":"50"}]]}},
+"id":"50"}],["58",{"enabled":true,
+"id":"58"}],["59",{"enabled":true,
+"id":"59"}]]}},
 "windowTypes":{"map":{"__map":true,
-"values":[["3","code"],["8","code"],["11","code"],["40","code"],["48","code"],["50","code"]]}},
-"windows":["3","8","11","40","48","50"],
+"values":[["3","code"],["8","code"],["11","code"],["40","code"],["48","code"],["50","code"],["58","runner"],["59","runner"]]}},
+"windows":["3","8","11","40","48","50","58","59"],
 "zIndex":{"map":{"__map":true,
-"values":[["3",115],["8",113],["11",106],["40",112],["48",103],["50",114]]},
-"sorted":null}}
+"values":[["3",112],["8",113],["11",114],["40",110],["48",117],["50",111],["58",116],["59",115]]},
+"sorted":[["40",110],["50",111],["3",112],["8",113],["11",114],["59",115],["58",116],["48",117]]}}
 {__codeMap: true, value: [[`3`, `const list = fetch(
   \`https://api.artic.edu/api/v1/artworks/search?q=\${query}&fields=title,id,image_id&limit=50\`
 ).then((r) => r.json()).then((json) => json.data);`],
@@ -65,7 +77,7 @@ const clickHandler = (evt) => {
     Events.send(clicked, evt.currentTarget?.getAttribute("imageId"))}};
 
 const listDOM = list.map((elem) => html\`<tr onClick=\${clickHandler} imageId="\${elem.image_id}">
-    <td>\${elem.id}</td><td>\${elem.title}</td></tr>\`);
+  <td>\${elem.id}</td><td>\${elem.title}</td></tr>\`);
 const tableDOM = html\`<table><tbody>\${listDOM}</tbody></table>\`;
 
 const src = \`https://www.artic.edu/iiif/2/\${clickedImageId}/full/843,/0/default.jpg\`;
@@ -89,9 +101,9 @@ const renkon = (() => {
   <div id="imageContainer"></div>
 \`.trim();
 
-    document.body.querySelector("#renkon")?.remove();
-    document.body.appendChild(renkon);
-    return renkon;
+  document.body.querySelector("#renkon")?.remove();
+  document.body.appendChild(renkon);
+  return renkon;
 })();
 `],
 [`40`, `const queryEvent = Events.listener(renkon.querySelector("#query"), "keydown", (evt) => {
@@ -188,7 +200,7 @@ const clickedImageId = Behaviors.keep(clicked);
 [`50`, `({
   parameters: {
     appParameters: {
-      name: '1346essxag',
+      name: '146essxag',
       password: '1',
       apiKey: "234567_Paste_Your_Own_API_Key_Here_7654321",
       box: "http://localhost:8888",
